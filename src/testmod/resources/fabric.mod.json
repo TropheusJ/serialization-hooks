@@ -17,12 +17,6 @@
     "main": [
       "io.github.tropheusj.serialization_hooks_test.SerializationHooksTest"
     ]
-  },
-  "depends": {
-    "fabricloader": ">=${loader_version}",
-    "fabric": ">=${fabric_version}",
-    "minecraft": ">=${minecraft_version}",
-    "java": ">=${java_version}"
   }
 }
 

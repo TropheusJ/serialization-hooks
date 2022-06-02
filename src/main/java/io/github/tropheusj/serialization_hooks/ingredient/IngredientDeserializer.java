@@ -1,9 +1,10 @@
-package io.github.tropheusj.serialization_hooks;
+package io.github.tropheusj.serialization_hooks.ingredient;
 
 import com.google.gson.JsonElement;
 
 import com.google.gson.JsonObject;
 
+import io.github.tropheusj.serialization_hooks.SerializationHooks;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
@@ -14,20 +15,20 @@ import net.minecraft.world.item.crafting.Ingredient;
 import javax.annotation.Nullable;
 
 /**
- * An IngredientSerializer handles converting between packets, json, and actual Ingredients.
+ * An IngredientDeserializer handles turning packets and Json back into actual Ingredients.
  */
 public interface IngredientDeserializer {
 	/**
-	 * The Registry for serializers.
+	 * The Registry for deserializers.
 	 */
 	Registry<IngredientDeserializer> REGISTRY = FabricRegistryBuilder.createSimple(
 			IngredientDeserializer.class, SerializationHooks.id("ingredient_deserializers")
 	).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
 	/**
-	 * The ID representing no serializer.
+	 * The ID representing no deserializer.
 	 */
-	ResourceLocation NONE = SerializationHooks.id("no_serializer");
+	ResourceLocation NONE = SerializationHooks.id("no_deserializer");
 
 	/**
 	 * Create an Ingredient from the packet.
@@ -39,7 +40,6 @@ public interface IngredientDeserializer {
 	 * Create an Ingredient from the given json object.
 	 * This should reflect the corresponding {@link Ingredient#toJson()} method in your Ingredient.
 	 */
-	@Nullable
 	Ingredient fromJson(JsonObject object);
 
 	static void init() {
@@ -48,7 +48,7 @@ public interface IngredientDeserializer {
 
 	/**
 	 * Try to deserialize an Ingredient from the given JsonObject.
-	 * @return deserialize ingredient, or null if not custom
+	 * @return the deserialized ingredient, or null if not custom
 	 */
 	@Nullable
 	static Ingredient tryDeserializeJson(JsonObject object) {

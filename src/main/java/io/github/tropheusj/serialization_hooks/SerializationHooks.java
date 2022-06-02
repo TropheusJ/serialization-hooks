@@ -1,5 +1,7 @@
 package io.github.tropheusj.serialization_hooks;
 
+import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
+import io.github.tropheusj.serialization_hooks.value.ValueDeserializer;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +16,7 @@ public class SerializationHooks implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		IngredientDeserializer.init();
+		ValueDeserializer.init();
 	}
 
 	public static ResourceLocation id(String path) {

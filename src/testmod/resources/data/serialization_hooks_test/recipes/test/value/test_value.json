@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "group": "iron_ingot",
+  "ingredient": {
+    "value_deserializer": "serialization_hooks_test:always_sponge",
+    "item": "minecraft:oak_planks"
+  },
+  "result": "minecraft:dark_oak_planks",
+  "experience": 0.7,
+  "cookingtime": 100
+}

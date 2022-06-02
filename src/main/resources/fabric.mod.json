@@ -16,6 +16,9 @@
   "entrypoints": {
     "main": [
       "io.github.tropheusj.serialization_hooks.SerializationHooks"
+    ],
+    "preLaunch": [
+      "io.github.tropheusj.serialization_hooks.SerializationHooksPreLaunch"
     ]
   },
   "mixins": [

@@ -1,8 +1,8 @@
-package io.github.tropheusj.serialization_hooks_test;
+package io.github.tropheusj.serialization_hooks_test.ingredient;
 
 import com.google.gson.JsonObject;
 
-import io.github.tropheusj.serialization_hooks.IngredientDeserializer;
+import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -20,6 +20,6 @@ public class TestIngredientDeserializer implements IngredientDeserializer {
 		int test1 = object.get("test1").getAsInt();
 		String stringTest = object.get("string_test").getAsString();
 		boolean sponge = object.get("sponge").getAsBoolean();
-		return Ingredient.of(sponge ? Items.SPONGE : Items.COAL_ORE);
+		return Ingredient.of(sponge ? Items.SPONGE : Items.SEA_LANTERN);
 	}
 }

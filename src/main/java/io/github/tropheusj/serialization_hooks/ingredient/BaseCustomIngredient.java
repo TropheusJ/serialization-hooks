@@ -1,4 +1,4 @@
-package io.github.tropheusj.serialization_hooks;
+package io.github.tropheusj.serialization_hooks.ingredient;
 
 import net.minecraft.world.item.crafting.Ingredient;
 

@@ -7,10 +7,15 @@ import com.google.gson.JsonObject;
 
 import com.google.gson.JsonSyntaxException;
 
-import io.github.tropheusj.serialization_hooks.CustomIngredient;
-import io.github.tropheusj.serialization_hooks.IngredientDeserializer;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
+import io.github.tropheusj.serialization_hooks.ingredient.CustomIngredient;
+import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
+import io.github.tropheusj.serialization_hooks.value.ValueDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import net.minecraft.world.item.crafting.Ingredient.Value;
@@ -21,6 +26,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
@@ -39,13 +45,21 @@ public abstract class IngredientMixin {
 		return null;
 	}
 
+	@ModifyExpressionValue(method = "test(Lnet/minecraft/world/item/ItemStack;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
+	private boolean serialization_hooks$customTesting(boolean itemMatches, ItemStack itemStack) {
+		if (this instanceof CustomIngredient custom && custom.customTest()) {
+			return custom.testCustom(itemStack, itemMatches);
+		}
+		return false;
+	}
+
 	@Inject(method = "fromNetwork", at = @At("HEAD"), cancellable = true)
 	private static void serialization_hooks$fromNetwork(FriendlyByteBuf buffer, CallbackInfoReturnable<Ingredient> cir) {
 		ResourceLocation id = buffer.readResourceLocation();
 		if (!id.equals(IngredientDeserializer.NONE)) {
 			IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
 			if (serializer == null)
-				throw new IllegalStateException("[SerializationHooks] IngredientSerializer with ID not found: " + id);
+				throw new IllegalStateException("[SerializationHooks] IngredientDeserializer with ID not found: " + id);
 			cir.setReturnValue(serializer.fromNetwork(buffer));
 		}
 	}
@@ -80,4 +94,10 @@ public abstract class IngredientMixin {
 		}
 	}
 
+	@Inject(method = "valueFromJson", at = @At("HEAD"), cancellable = true)
+	private static void serialization_hooks$valueFromJson(JsonObject json, CallbackInfoReturnable<Value> cir) {
+		Value deserialized = ValueDeserializer.tryDeserializeJson(json);
+		if (deserialized != null)
+			cir.setReturnValue(deserialized);
+	}
 }

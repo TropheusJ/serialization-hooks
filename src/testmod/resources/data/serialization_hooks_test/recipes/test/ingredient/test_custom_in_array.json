@@ -7,7 +7,7 @@
   "key": {
     "#": [
       {
-        "type": "serialization_hooks:test",
+        "type": "serialization_hooks_test:test",
         "test1": 42,
         "string_test": "aaaaaaa",
         "sponge": true

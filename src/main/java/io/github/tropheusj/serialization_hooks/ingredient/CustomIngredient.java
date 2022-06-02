@@ -1,5 +1,6 @@
-package io.github.tropheusj.serialization_hooks;
+package io.github.tropheusj.serialization_hooks.ingredient;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Arrays;
@@ -20,6 +21,23 @@ public interface CustomIngredient {
 	 * @return an array of Ingredient.Values, created from this Ingredient.
 	 */
 	Ingredient.Value[] getValues();
+
+	/**
+	 * @return if this Ingredient should have custom logic for testing if an ItemStack matches it
+	 */
+	default boolean customTest() {
+		return false;
+	}
+
+	/**
+	 * Convenience method for adding custom logic for matching.
+	 * In order for this to be used, {@link #customTest()} must return true.
+	 * @param itemMatches if true, the given ItemStack's Item matches this Ingredient already.
+	 * @return if the given ItemStack matches this Ingredient
+	 */
+	default boolean testCustom(ItemStack stack, boolean itemMatches) {
+		throw new IllegalStateException("May never be called if customTest return false");
+	}
 
 	default boolean customDeserializer() {
 		return getDeserializer() != null;
