@@ -51,6 +51,22 @@ Registry.register(ValueDeserializer.REGISTRY, new ResourceLocation("example_mod"
 ```
 And you want to implement CustomValue onto your Values.
 
+To use custom values, specify a `value_deserializer` in a Value Json:
+```json
+{
+  "type": "minecraft:blasting",
+  "group": "iron_ingot",
+  "ingredient": {
+    "value_deserializer": "example_mod:example",
+    "thingies": "indeed"
+  },
+  "result": "minecraft:dark_oak_planks",
+  "experience": 0.7,
+  "cookingtime": 100
+}
+
+```
+
 Note that custom values are not as plug-and-play as ingredients; by
 default, ingredients only compare values by checking if their stacks
 hold the same item. For further checks, you need a custom Ingredient.
