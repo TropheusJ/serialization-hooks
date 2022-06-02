@@ -1,5 +1,7 @@
 package io.github.tropheusj.serialization_hooks_test;
 
+import io.github.tropheusj.serialization_hooks.IngredientDeserializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +16,8 @@ public class SerializationHooksTest implements ModInitializer {
 	// todo: loom why
 	@Override
 	public void onInitialize() {
-		IngredientSerializer.init();
-		Registry.register(IngredientSerializer.REGISTRY, id("test"), new TestIngredientDeserializer());
+		IngredientDeserializer.init();
+		Registry.register(IngredientDeserializer.REGISTRY, id("test"), new TestIngredientDeserializer());
 	}
 
 	public static ResourceLocation id(String path) {

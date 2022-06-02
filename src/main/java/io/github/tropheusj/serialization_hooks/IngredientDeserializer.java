@@ -1,6 +1,6 @@
 package io.github.tropheusj.serialization_hooks;
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import com.google.gson.JsonObject;
 
@@ -31,28 +31,35 @@ public interface IngredientDeserializer {
 
 	/**
 	 * Create an Ingredient from the packet.
-	 * This buffer is guaranteed to be designed for this serializer, and this method should
-	 * always return non-null.
+	 * This should reflect the corresponding {@link Ingredient#toNetwork(FriendlyByteBuf)} method in your Ingredient.
 	 */
-	Ingredient fromPacket(FriendlyByteBuf buffer);
+	Ingredient fromNetwork(FriendlyByteBuf buffer);
 
 	/**
-	 * Create an Ingredient from the json array.
-	 * This object is guaranteed to be designed for this serializer, and this method should
-	 * always return non-null.
-	 */
-	Ingredient fromJsonObject(JsonObject object);
-
-	/**
-	 * Create an Ingredient from the json array.
-	 * Unlike {@link IngredientDeserializer#fromJsonObject(JsonObject)}, this array is not guaranteed to be
-	 * designed for this serializer. This is because array-based ingredients have no way to declare their serializer.
-	 * Serializers should attempt to deserialize, and return null if they can't.
+	 * Create an Ingredient from the given json object.
+	 * This should reflect the corresponding {@link Ingredient#toJson()} method in your Ingredient.
 	 */
 	@Nullable
-	Ingredient fromJsonArray(JsonArray array);
+	Ingredient fromJson(JsonObject object);
 
 	static void init() {
 		// load the class and registry
+	}
+
+	/**
+	 * Try to deserialize an Ingredient from the given JsonObject.
+	 * @return deserialize ingredient, or null if not custom
+	 */
+	@Nullable
+	static Ingredient tryDeserializeJson(JsonObject object) {
+		JsonElement type = object.get("type");
+		if (type != null && type.isJsonPrimitive()) {
+			ResourceLocation deserializerId = new ResourceLocation(type.getAsString());
+			IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(deserializerId);
+			if (deserializer == null)
+				throw new IllegalStateException("Ingredient deserializer with ID not found: " + deserializerId);
+			return deserializer.fromJson(object);
+		}
+		return null;
 	}
 }

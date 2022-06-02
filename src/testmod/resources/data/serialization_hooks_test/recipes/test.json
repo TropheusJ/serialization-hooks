@@ -2,8 +2,10 @@
   "type": "minecraft:blasting",
   "group": "iron_ingot",
   "ingredient": {
-    "serializer": "serialization_hooks:test",
-    "a": "minecraft:sponge"
+    "type": "serialization_hooks:test",
+    "test1": 42,
+    "string_test": "aaaaaaa",
+    "sponge": true
   },
   "result": "minecraft:dirt",
   "experience": 0.7,
