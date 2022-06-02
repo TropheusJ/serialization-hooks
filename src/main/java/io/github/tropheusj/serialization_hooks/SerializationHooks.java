@@ -13,7 +13,7 @@ public class SerializationHooks implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		IngredientSerializer.init();
+		IngredientDeserializer.init();
 	}
 
 	public static ResourceLocation id(String path) {

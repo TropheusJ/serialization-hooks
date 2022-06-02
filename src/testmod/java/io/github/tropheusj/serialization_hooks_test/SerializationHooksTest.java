@@ -15,7 +15,7 @@ public class SerializationHooksTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		IngredientSerializer.init();
-		Registry.register(IngredientSerializer.REGISTRY, id("test"), new TestIngredientSerializer());
+		Registry.register(IngredientSerializer.REGISTRY, id("test"), new TestIngredientDeserializer());
 	}
 
 	public static ResourceLocation id(String path) {

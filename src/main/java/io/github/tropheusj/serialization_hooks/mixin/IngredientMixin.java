@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 
 import com.google.gson.JsonObject;
 
-import io.github.tropheusj.serialization_hooks.IngredientSerializer;
+import io.github.tropheusj.serialization_hooks.IngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -21,8 +21,8 @@ public abstract class IngredientMixin {
 	@Inject(method = "fromNetwork", at = @At("HEAD"), cancellable = true)
 	private static void serialization_hooks$fromNetwork(FriendlyByteBuf buffer, CallbackInfoReturnable<Ingredient> cir) {
 		ResourceLocation id = buffer.readResourceLocation();
-		if (!id.equals(IngredientSerializer.NONE)) {
-			IngredientSerializer serializer = IngredientSerializer.REGISTRY.get(id);
+		if (!id.equals(IngredientDeserializer.NONE)) {
+			IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
 			if (serializer == null)
 				throw new IllegalStateException("[SerializationHooks] IngredientSerializer with ID not found: " + id);
 			cir.setReturnValue(serializer.fromPacket(buffer));
@@ -47,7 +47,7 @@ public abstract class IngredientMixin {
 		if (!serializerElement.isJsonPrimitive())
 			throw new IllegalStateException("[SerializationHooks] A serializer is declared, but it is not a primitive: " + serializerElement);
 		ResourceLocation id = new ResourceLocation(serializerElement.getAsString());
-		IngredientSerializer serializer = IngredientSerializer.REGISTRY.get(id);
+		IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
 		if (serializer == null)
 			throw new IllegalStateException("[SerializationHooks] IngredientSerializer with ID not found: " + id);
 		cir.setReturnValue(serializer.fromJsonObject(obj));
@@ -65,7 +65,7 @@ public abstract class IngredientMixin {
 	)
 	private static void serialization_hooks$fromJsonArray(JsonElement json, CallbackInfoReturnable<Ingredient> cir) {
 		JsonArray array = json.getAsJsonArray();
-		for (IngredientSerializer serializer : IngredientSerializer.REGISTRY) {
+		for (IngredientDeserializer serializer : IngredientDeserializer.REGISTRY) {
 			Ingredient deserialized = serializer.fromJsonArray(array);
 			if (deserialized == null)
 				continue;

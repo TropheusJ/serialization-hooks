@@ -16,12 +16,12 @@ import javax.annotation.Nullable;
 /**
  * An IngredientSerializer handles converting between packets, json, and actual Ingredients.
  */
-public interface IngredientSerializer {
+public interface IngredientDeserializer {
 	/**
 	 * The Registry for serializers.
 	 */
-	Registry<IngredientSerializer> REGISTRY = FabricRegistryBuilder.createSimple(
-			IngredientSerializer.class, SerializationHooks.id("ingredient_serializers")
+	Registry<IngredientDeserializer> REGISTRY = FabricRegistryBuilder.createSimple(
+			IngredientDeserializer.class, SerializationHooks.id("ingredient_deserializers")
 	).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
 	/**
@@ -45,7 +45,7 @@ public interface IngredientSerializer {
 
 	/**
 	 * Create an Ingredient from the json array.
-	 * Unlike {@link IngredientSerializer#fromJsonObject(JsonObject)}, this array is not guaranteed to be
+	 * Unlike {@link IngredientDeserializer#fromJsonObject(JsonObject)}, this array is not guaranteed to be
 	 * designed for this serializer. This is because array-based ingredients have no way to declare their serializer.
 	 * Serializers should attempt to deserialize, and return null if they can't.
 	 */

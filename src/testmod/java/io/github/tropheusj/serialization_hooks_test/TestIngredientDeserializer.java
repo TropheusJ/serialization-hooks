@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class TestIngredientSerializer implements IngredientSerializer {
+public class TestIngredientDeserializer implements IngredientDeserializer {
 	@Override
 	public Ingredient fromPacket(FriendlyByteBuf buffer) {
 		return Ingredient.of(buffer.readItem());
