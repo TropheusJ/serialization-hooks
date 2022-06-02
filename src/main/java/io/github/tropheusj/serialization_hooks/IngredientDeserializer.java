@@ -1,6 +1,8 @@
 package io.github.tropheusj.serialization_hooks;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+
+import com.google.gson.JsonObject;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -29,16 +31,26 @@ public interface IngredientDeserializer {
 
 	/**
 	 * Create an Ingredient from the packet.
-	 * This should reflect the corresponding {@link Ingredient#toNetwork(FriendlyByteBuf)} method in your Ingredient.
+	 * This buffer is guaranteed to be designed for this serializer, and this method should
+	 * always return non-null.
 	 */
 	Ingredient fromPacket(FriendlyByteBuf buffer);
 
 	/**
-	 * Create an Ingredient from the given json element.
-	 * @return null if no Ingredient could be deserialized
+	 * Create an Ingredient from the json array.
+	 * This object is guaranteed to be designed for this serializer, and this method should
+	 * always return non-null.
+	 */
+	Ingredient fromJsonObject(JsonObject object);
+
+	/**
+	 * Create an Ingredient from the json array.
+	 * Unlike {@link IngredientDeserializer#fromJsonObject(JsonObject)}, this array is not guaranteed to be
+	 * designed for this serializer. This is because array-based ingredients have no way to declare their serializer.
+	 * Serializers should attempt to deserialize, and return null if they can't.
 	 */
 	@Nullable
-	Ingredient fromJson(JsonElement object);
+	Ingredient fromJsonArray(JsonArray array);
 
 	static void init() {
 		// load the class and registry
