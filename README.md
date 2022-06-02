@@ -8,9 +8,11 @@ Currently, only Ingredients are supported, however more is planned.
 maven { url = "https://mvn.devos.one/snapshots/" }
 ```
 ```groovy
-modImplementation("io.github.tropheusj:serialization-hooks:VERSION")
+modImplementation("io.github.tropheusj:serialization-hooks:VERSION+HASH")
 ```
-find the latest version by [browsing the maven](https://mvn.devos.one/#/snapshots/io/github/tropheusj/serialization-hooks).
+find the latest version by [browsing the maven](https://mvn.devos.one/#/snapshots/io/github/tropheusj/serialization-hooks),
+and find the latest hash here on GitHub.
+![](https://cdn.discordapp.com/attachments/705864145169416313/982010377564999771/unknown.png)
 
 ### Actually using it
 Once you have it in your environment, you'll want to register an `IngredientDeserializer`.
