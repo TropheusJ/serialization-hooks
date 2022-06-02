@@ -8,10 +8,10 @@ Currently, only Ingredients are supported, however more is planned.
 maven { url = "https://mvn.devos.one/snapshots/" }
 ```
 ```groovy
-modImplementation("io.github.tropheusj:serialization-hooks:VERSION+HASH")
+modImplementation("io.github.tropheusj:serialization-hooks:<version>+<branch>.<hash>")
 ```
 find the latest version by [browsing the maven](https://mvn.devos.one/#/snapshots/io/github/tropheusj/serialization-hooks),
-and find the latest hash here on GitHub.
+and find the latest branch and hash here on GitHub.
 ![](https://cdn.discordapp.com/attachments/705864145169416313/982010377564999771/unknown.png)
 
 ### Actually using it
