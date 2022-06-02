@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "group": "iron_ingot",
+  "ingredient": {
+    "serializer": "serialization_hooks:test",
+    "a": "minecraft:sponge"
+  },
+  "result": "minecraft:dirt",
+  "experience": 0.7,
+  "cookingtime": 100
+}

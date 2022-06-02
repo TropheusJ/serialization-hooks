@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "serialization_hooks",
+  "id": "serialization_hooks_test",
   "version": "${version}",
-  "name": "Serialization Hooks",
-  "description": "Adds additional hooks for serialization.",
+  "name": "Serialization Hooks Test",
+  "description": "Test mod for Serialization Hooks",
   "authors": [
     "Tropheus Jay"
   ],
@@ -11,17 +11,13 @@
     "sources": "https://github.com/TropheusJ/serialization-hooks"
   },
   "license": "MIT",
-  "icon": "assets/serialization_hooks/icon.png",
+  "icon": "assets/serialization_hooks_test/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.tropheusj.serialization_hooks.SerializationHooks"
+      "io.github.tropheusj.serialization_hooks_test.SerializationHooksTest"
     ]
   },
-  "mixins": [
-    "serialization_hooks.mixins.json"
-  ],
-  "accessWidener": "serialization_hooks.accesswidener",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": ">=${fabric_version}",

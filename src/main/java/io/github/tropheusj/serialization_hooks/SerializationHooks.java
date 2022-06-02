@@ -1,4 +1,4 @@
-package io.github.tropheusj.modid;
+package io.github.tropheusj.serialization_hooks;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -7,12 +7,13 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExampleMod implements ModInitializer {
-	public static final String ID = "modid";
+public class SerializationHooks implements ModInitializer {
+	public static final String ID = "serialization_hooks";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
 	@Override
 	public void onInitialize() {
+		IngredientSerializer.init();
 	}
 
 	public static ResourceLocation id(String path) {

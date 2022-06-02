@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "wooden_fence_gate",
+  "pattern": [
+    "#W "
+  ],
+  "key": {
+    "#": [
+      {
+        "one": "minecraft:stone",
+        "two": "minecraft:beacon"
+      },
+      {
+        "one": "minecraft:baked_potato",
+        "two": "minecraft:grass"
+      }
+    ],
+    "W": {
+      "item": "minecraft:acacia_planks"
+    }
+  },
+  "result": {
+    "item": "minecraft:acacia_fence_gate"
+  }
+}

@@ -43,6 +43,7 @@ dependencies {
 	modLocalRuntime("maven.modrinth:lazydfu:0.1.2")
 	modLocalRuntime("maven.modrinth:suggestionproviderfabric:1.0.1")
 	modLocalRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}")
+	modLocalRuntime("maven.modrinth:badpackets:${project.bad_packets_version}")
 	modLocalRuntime("maven.modrinth:sodium:${project.sodium_version}") // rendering beware
     localRuntime("org.joml:joml:1.10.4")
 	modLocalRuntime("maven.modrinth:lithium:${project.lithium_version}")
@@ -51,6 +52,32 @@ dependencies {
 
 	// dependencies
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+}
+
+sourceSets {
+	testmod {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+	}
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/serialization_hooks.accesswidener")
+
+	runs {
+		testmodClient {
+			client()
+			name "Testmod Client"
+			source sourceSets.testmod
+			runDir "run/test"
+		}
+		testmodServer {
+			server()
+			name "Testmod Server"
+			source sourceSets.testmod
+			runDir "run/test_server"
+		}
+	}
 }
 
 task buildOrPublish {
