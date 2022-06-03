@@ -55,13 +55,9 @@ public abstract class IngredientMixin {
 
 	@Inject(method = "fromNetwork", at = @At("HEAD"), cancellable = true)
 	private static void serialization_hooks$fromNetwork(FriendlyByteBuf buffer, CallbackInfoReturnable<Ingredient> cir) {
-		ResourceLocation id = buffer.readResourceLocation();
-		if (!id.equals(IngredientDeserializer.NONE)) {
-			IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
-			if (serializer == null)
-				throw new IllegalStateException("[SerializationHooks] IngredientDeserializer with ID not found: " + id);
-			cir.setReturnValue(serializer.fromNetwork(buffer));
-		}
+		Ingredient deserialized = IngredientDeserializer.tryDeserializeNetwork(buffer);
+		if (deserialized != null)
+			cir.setReturnValue(deserialized);
 	}
 
 	/**

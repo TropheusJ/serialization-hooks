@@ -62,4 +62,25 @@ public interface IngredientDeserializer {
 		}
 		return null;
 	}
+
+	/**
+	 * Try to deserialize an Ingredient from the given buffer.
+	 * @return the deserialized ingredient, or null if not custom
+	 */
+	@Nullable
+	static Ingredient tryDeserializeNetwork(FriendlyByteBuf buf) {
+		int readIndex = buf.readerIndex();
+		try {
+			ResourceLocation id = buf.readResourceLocation();
+			if (!id.equals(IngredientDeserializer.NONE)) {
+				IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
+				if (serializer == null)
+					throw new IllegalStateException("[SerializationHooks] IngredientDeserializer with ID not found: " + id);
+				return serializer.fromNetwork(buf);
+			}
+		} catch (Exception e) {
+			buf.readerIndex(readIndex);
+		}
+		return null;
+	}
 }
