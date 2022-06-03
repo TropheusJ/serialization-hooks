@@ -50,7 +50,7 @@ public abstract class IngredientMixin {
 		if (this instanceof CustomIngredient custom && custom.customTest()) {
 			return custom.testCustom(itemStack, itemMatches);
 		}
-		return false;
+		return itemMatches;
 	}
 
 	@Inject(method = "fromNetwork", at = @At("HEAD"), cancellable = true)
