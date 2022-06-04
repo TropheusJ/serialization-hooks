@@ -14,6 +14,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An IngredientDeserializer handles turning packets and Json back into actual Ingredients.
  */
@@ -24,6 +27,12 @@ public interface IngredientDeserializer {
 	Registry<IngredientDeserializer> REGISTRY = FabricRegistryBuilder.createSimple(
 			IngredientDeserializer.class, SerializationHooks.id("ingredient_deserializers")
 	).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+
+	/**
+	 * List of deserializer IDs that are referenced in recipes but were not found.
+	 * Used to avoid log spam.
+	 */
+	List<ResourceLocation> KNOWN_MISSING = new ArrayList<>();
 
 	/**
 	 * The ID representing no deserializer.
@@ -54,11 +63,16 @@ public interface IngredientDeserializer {
 	static Ingredient tryDeserializeJson(JsonObject object) {
 		JsonElement type = object.get("type");
 		if (type != null && type.isJsonPrimitive()) {
-			ResourceLocation deserializerId = new ResourceLocation(type.getAsString());
-			IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(deserializerId);
-			if (deserializer == null)
-				throw new IllegalStateException("Ingredient deserializer with ID not found: " + deserializerId);
-			return deserializer.fromJson(object);
+			ResourceLocation id = ResourceLocation.tryParse(type.getAsString());
+			if (id == null)
+				return null;
+			IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(id);
+			if (deserializer != null)
+				return deserializer.fromJson(object);
+			if (KNOWN_MISSING.contains(id))
+				return null;
+			KNOWN_MISSING.add(id);
+			SerializationHooks.LOGGER.error("IngredientDeserializer with ID not found: [{}] this can be ignored unless issues occur.", id);
 		}
 		return null;
 	}
@@ -70,17 +84,17 @@ public interface IngredientDeserializer {
 	@Nullable
 	static Ingredient tryDeserializeNetwork(FriendlyByteBuf buf) {
 		int readIndex = buf.readerIndex();
-		try {
-			ResourceLocation id = buf.readResourceLocation();
-			if (!id.equals(IngredientDeserializer.NONE)) {
-				IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
-				if (serializer == null)
-					throw new IllegalStateException("[SerializationHooks] IngredientDeserializer with ID not found: " + id);
-				return serializer.fromNetwork(buf);
-			}
-		} catch (Exception e) {
-			buf.readerIndex(readIndex);
+		ResourceLocation id = ResourceLocation.tryParse(buf.readUtf(32767));
+		if (id != null && !id.getPath().isEmpty() && !id.equals(IngredientDeserializer.NONE)) {
+			IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(id);
+			if (deserializer != null)
+				return deserializer.fromNetwork(buf);
+			if (KNOWN_MISSING.contains(id))
+				return null;
+			KNOWN_MISSING.add(id);
+			SerializationHooks.LOGGER.error("IngredientDeserializer with ID not found: [{}] this can be ignored unless issues occur.", id);
 		}
+		buf.readerIndex(readIndex);
 		return null;
 	}
 }
