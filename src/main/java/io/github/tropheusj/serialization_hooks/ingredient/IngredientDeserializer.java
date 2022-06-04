@@ -14,6 +14,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An IngredientDeserializer handles turning packets and Json back into actual Ingredients.
  */
@@ -24,6 +27,12 @@ public interface IngredientDeserializer {
 	Registry<IngredientDeserializer> REGISTRY = FabricRegistryBuilder.createSimple(
 			IngredientDeserializer.class, SerializationHooks.id("ingredient_deserializers")
 	).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+
+	/**
+	 * List of deserializer IDs that are referenced in recipes but were not found.
+	 * Used to avoid log spam.
+	 */
+	List<ResourceLocation> KNOWN_MISSING = new ArrayList<>();
 
 	/**
 	 * The ID representing no deserializer.
@@ -74,9 +83,12 @@ public interface IngredientDeserializer {
 			ResourceLocation id = buf.readResourceLocation();
 			if (!id.equals(IngredientDeserializer.NONE)) {
 				IngredientDeserializer serializer = IngredientDeserializer.REGISTRY.get(id);
-				if (serializer == null)
-					throw new IllegalStateException("[SerializationHooks] IngredientDeserializer with ID not found: " + id);
-				return serializer.fromNetwork(buf);
+				if (serializer != null)
+					return serializer.fromNetwork(buf);
+				if (KNOWN_MISSING.contains(id))
+					return null;
+				KNOWN_MISSING.add(id);
+				SerializationHooks.LOGGER.error("IngredientDeserializer with ID not found: [{}] This can be ignored unless recipes are missing or broken.", id);
 			}
 		} catch (Exception e) {
 			buf.readerIndex(readIndex);
