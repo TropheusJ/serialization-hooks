@@ -3,6 +3,8 @@ package io.github.tropheusj.serialization_hooks.ingredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import javax.annotation.Nullable;
+
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -35,7 +37,7 @@ public interface CustomIngredient {
 	 * @param itemMatches if true, the given ItemStack's Item matches this Ingredient already.
 	 * @return if the given ItemStack matches this Ingredient
 	 */
-	default boolean testCustom(ItemStack stack, boolean itemMatches) {
+	default boolean testCustom(@Nullable ItemStack stack, boolean itemMatches) {
 		throw new IllegalStateException("May never be called if customTest return false");
 	}
 
