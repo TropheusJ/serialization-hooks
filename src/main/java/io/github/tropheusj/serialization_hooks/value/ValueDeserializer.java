@@ -13,9 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient.Value;
 
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A ValueDeserializer handles converting Json back to a Value.
  */
@@ -26,12 +23,6 @@ public interface ValueDeserializer {
 	Registry<ValueDeserializer> REGISTRY = FabricRegistryBuilder.createSimple(
 			ValueDeserializer.class, SerializationHooks.id("value_deserializers")
 	).attribute(RegistryAttribute.SYNCED).buildAndRegister();
-
-	/**
-	 * List of deserializer IDs that are referenced in recipes but were not found.
-	 * Used to avoid log spam.
-	 */
-	List<ResourceLocation> KNOWN_MISSING = new ArrayList<>();
 
 	/**
 	 * Create a Value from the given json object.
@@ -51,14 +42,11 @@ public interface ValueDeserializer {
 	static Value tryDeserializeJson(JsonObject object) {
 		JsonElement type = object.get("value_deserializer");
 		if (type != null && type.isJsonPrimitive()) {
-			ResourceLocation id = new ResourceLocation(type.getAsString());
-			ValueDeserializer deserializer = ValueDeserializer.REGISTRY.get(id);
-			if (deserializer != null)
-				return deserializer.fromJson(object);
-			if (KNOWN_MISSING.contains(id))
-				return null;
-			KNOWN_MISSING.add(id);
-			SerializationHooks.LOGGER.error("ValueDeserializer with ID not found: [{}] This can be ignored unless recipes are missing or broken.", id);
+			ResourceLocation deserializerId = new ResourceLocation(type.getAsString());
+			ValueDeserializer deserializer = ValueDeserializer.REGISTRY.get(deserializerId);
+			if (deserializer == null)
+				throw new IllegalStateException("Value deserializer with ID not found: " + deserializerId);
+			return deserializer.fromJson(object);
 		}
 		return null;
 	}
