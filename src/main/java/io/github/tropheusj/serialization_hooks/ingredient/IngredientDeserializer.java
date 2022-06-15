@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import io.github.tropheusj.serialization_hooks.SerializationHooks;
+import io.netty.handler.codec.DecoderException;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
@@ -84,17 +85,22 @@ public interface IngredientDeserializer {
 	@Nullable
 	static Ingredient tryDeserializeNetwork(FriendlyByteBuf buf) {
 		int readIndex = buf.readerIndex();
-		ResourceLocation id = ResourceLocation.tryParse(buf.readUtf(32767));
-		if (id != null && !id.getPath().isEmpty() && !id.equals(IngredientDeserializer.NONE)) {
-			IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(id);
-			if (deserializer != null)
-				return deserializer.fromNetwork(buf);
-			if (KNOWN_MISSING.contains(id))
-				return null;
-			KNOWN_MISSING.add(id);
-			SerializationHooks.LOGGER.error("IngredientDeserializer with ID not found: [{}] this can be ignored unless issues occur.", id);
+		try {
+			ResourceLocation id = ResourceLocation.tryParse(buf.readUtf());
+			if (id != null && !id.getPath().isEmpty() && !id.equals(IngredientDeserializer.NONE)) {
+				IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(id);
+				if (deserializer != null)
+					return deserializer.fromNetwork(buf);
+				if (KNOWN_MISSING.contains(id))
+					return null;
+				KNOWN_MISSING.add(id);
+				SerializationHooks.LOGGER.error("IngredientDeserializer with ID not found: [{}] this can be ignored unless issues occur.", id);
+			}
+			buf.readerIndex(readIndex);
+			return null;
+		} catch (DecoderException e) { // not a string
+			buf.readerIndex(readIndex);
+			return null;
 		}
-		buf.readerIndex(readIndex);
-		return null;
 	}
 }
