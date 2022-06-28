@@ -7,10 +7,8 @@
   "key": {
     "#": [
       {
-        "type": "serialization_hooks_test:test",
-        "test1": 42,
-        "string_test": "aaaaaaa",
-        "sponge": true
+        "type": "serialization_hooks_test:id_prefix",
+        "match": "b"
       },
       {
         "item": "minecraft:stone"

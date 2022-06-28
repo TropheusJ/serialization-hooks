@@ -4,7 +4,10 @@ import com.google.gson.JsonElement;
 
 import com.google.gson.JsonObject;
 
+import com.google.gson.JsonSyntaxException;
+
 import io.github.tropheusj.serialization_hooks.SerializationHooks;
+import io.github.tropheusj.serialization_hooks.ingredient.CombinedIngredient.Deserializer;
 import io.netty.handler.codec.DecoderException;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -36,11 +39,6 @@ public interface IngredientDeserializer {
 	List<ResourceLocation> KNOWN_MISSING = new ArrayList<>();
 
 	/**
-	 * The ID representing no deserializer.
-	 */
-	ResourceLocation NONE = SerializationHooks.id("no_deserializer");
-
-	/**
 	 * Create an Ingredient from the packet.
 	 * This should reflect the corresponding {@link Ingredient#toNetwork(FriendlyByteBuf)} method in your Ingredient.
 	 */
@@ -54,6 +52,7 @@ public interface IngredientDeserializer {
 
 	static void init() {
 		// load the class and registry
+		Registry.register(REGISTRY, Deserializer.ID, Deserializer.INSTANCE);
 	}
 
 	/**
@@ -68,8 +67,13 @@ public interface IngredientDeserializer {
 			if (id == null)
 				return null;
 			IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(id);
-			if (deserializer != null)
-				return deserializer.fromJson(object);
+			if (deserializer != null) {
+				try {
+					return deserializer.fromJson(object);
+				} catch (JsonSyntaxException ex) {
+					SerializationHooks.LOGGER.error("Failed to deserialize Ingredient using deserializer [{}]: {}", id, ex.getMessage());
+				}
+			}
 			if (KNOWN_MISSING.contains(id))
 				return null;
 			KNOWN_MISSING.add(id);
@@ -87,7 +91,7 @@ public interface IngredientDeserializer {
 		int readIndex = buf.readerIndex();
 		try {
 			ResourceLocation id = ResourceLocation.tryParse(buf.readUtf());
-			if (id != null && !id.getPath().isEmpty() && !id.equals(IngredientDeserializer.NONE)) {
+			if (id != null && !id.getPath().isEmpty()) {
 				IngredientDeserializer deserializer = IngredientDeserializer.REGISTRY.get(id);
 				if (deserializer != null)
 					return deserializer.fromNetwork(buf);

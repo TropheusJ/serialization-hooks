@@ -8,17 +8,17 @@ Currently, Ingredients and Values are supported.
 maven { url = "https://mvn.devos.one/snapshots/" }
 ```
 ```groovy
-modImplementation("io.github.tropheusj:serialization-hooks:<version>+<branch>.<hash>")
+modImplementation(include("io.github.tropheusj:serialization-hooks:0.3.<build>"))
 ```
-find the latest version by [browsing the maven](https://mvn.devos.one/#/snapshots/io/github/tropheusj/serialization-hooks),
-and find the latest branch and hash here on GitHub.
-![](https://cdn.discordapp.com/attachments/705864145169416313/982010377564999771/unknown.png)
+find the latest build from [GitHub Actions](https://github.com/TropheusJ/serialization-hooks/actions).
 
 ### Actually using it
 #### Ingredients
 Once you have it in your environment, you'll want to register an `IngredientDeserializer`.
 Simply create a class and implement the interface. Note that a deserializer only handles deserialization;
-serialization should be handled by the Ingredient with `toJson` and `toNetwork`.
+serialization should be handled by the Ingredient with `toJson` and `toNetwork`. Note that `toNetwork` must
+always first write the `Identifier`/`ResourceLocation` of the corresponding deserializer. See the testmod's
+TestIngredient for a complete implementation.
 ```java
 Registry.register(IngredientDeserializer.REGISTRY, new ResourceLocation("example_mod", "example"), new ExampleIngredientDeserializer());
 ```
@@ -44,6 +44,31 @@ in Json, you can add a `type` entry to the object pointing to your deserializer.
     }
 }
 ```
+A JSON array can be used to specify that multiple ingredients can be valid. You can mix and match types,
+and even have recursive arrays.
+```json
+{
+  "ingredient": [
+      {
+          "type": "example_mod:example_2",
+          "data": "goes here"
+      },
+      {
+          "item": "minecraft:stone"
+      },
+      [
+          {
+              "type": "example_mod:example_3",
+              "data": "goes here too"
+          },
+          {
+              "type": "example_mod:example_4",
+              "you_get": "the point"
+          }
+      ]
+  ]
+}
+```
 #### Values
 Values are similar to Ingredients. You want a `ValueDeserializer` instead:
 ```java
@@ -64,7 +89,6 @@ To use custom values, specify a `value_deserializer` in a Value Json:
   "experience": 0.7,
   "cookingtime": 100
 }
-
 ```
 
 Note that custom values are not as plug-and-play as ingredients; by

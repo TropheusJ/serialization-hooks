@@ -3,7 +3,7 @@ package io.github.tropheusj.serialization_hooks_test;
 import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
 
 import io.github.tropheusj.serialization_hooks.value.ValueDeserializer;
-import io.github.tropheusj.serialization_hooks_test.ingredient.TestIngredientDeserializer;
+import io.github.tropheusj.serialization_hooks_test.ingredient.IdPrefixMatchingIngredient;
 
 import io.github.tropheusj.serialization_hooks_test.value.TestValueDeserializer;
 
@@ -20,8 +20,7 @@ public class SerializationHooksTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		IngredientDeserializer.init();
-		Registry.register(IngredientDeserializer.REGISTRY, id("test"), new TestIngredientDeserializer());
+		Registry.register(IngredientDeserializer.REGISTRY, IdPrefixMatchingIngredient.Deserializer.ID, IdPrefixMatchingIngredient.Deserializer.INSTANCE);
 		Registry.register(ValueDeserializer.REGISTRY, id("always_sponge"), new TestValueDeserializer());
 	}
 

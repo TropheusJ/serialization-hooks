@@ -1,6 +1,5 @@
 package io.github.tropheusj.serialization_hooks.value;
 
-import io.github.tropheusj.serialization_hooks.ingredient.CustomIngredient;
 import net.minecraft.world.item.crafting.Ingredient.Value;
 
 /**

@@ -11,6 +11,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
+import io.github.tropheusj.serialization_hooks.ingredient.CombinedIngredient;
 import io.github.tropheusj.serialization_hooks.ingredient.CustomIngredient;
 import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
 import io.github.tropheusj.serialization_hooks.value.ValueDeserializer;
@@ -31,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -53,7 +55,6 @@ public abstract class IngredientMixin {
 		}
 		return itemMatches;
 	}
-
 
 	@Inject(method = "fromNetwork", at = @At("HEAD"), cancellable = true)
 	private static void serialization_hooks$fromNetwork(FriendlyByteBuf buffer, CallbackInfoReturnable<Ingredient> cir) {
@@ -85,7 +86,13 @@ public abstract class IngredientMixin {
 				for (JsonElement element : jsonArray) {
 					nested.add(fromJson(element));
 				}
-				return fromValues(nested.stream().flatMap(CustomIngredient::streamValues));
+				// use vanilla method for vanilla ingredients
+				if (nested.stream().allMatch(i -> i.getClass() == Ingredient.class)) {
+					return fromValues(nested.stream().flatMap(i -> Arrays.stream(i.values)));
+				} else {
+					// custom ingredients require custom handling
+					return new CombinedIngredient(nested);
+				}
 			}
 		} else {
 			throw new JsonSyntaxException("Expected item to be object or array of objects");

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "wooden_fence_gate",
+  "pattern": [
+    "X  ",
+    " X ",
+    "  X"
+  ],
+  "key": {
+    "X": [
+      {
+        "type": "serialization_hooks_test:id_prefix",
+        "match": "s"
+      },
+      {
+        "item": "minecraft:ice"
+      },
+      [
+        {
+          "type": "serialization_hooks_test:id_prefix",
+          "match": "f"
+        },
+        {
+          "value_deserializer": "serialization_hooks_test:always_sponge",
+          "item": "minecraft:oak_wood"
+        }
+      ]
+    ]
+  },
+  "result": {
+    "item": "minecraft:stone"
+  }
+}

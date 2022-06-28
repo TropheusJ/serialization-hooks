@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "wooden_fence_gate",
+  "pattern": [
+    "ABC"
+  ],
+  "key": {
+    "A": {
+      "type": "serialization_hooks_test:id_prefix",
+      "match": "a"
+    },
+    "B": {
+      "type": "serialization_hooks_test:id_prefix",
+      "match": "b"
+    },
+    "C": {
+      "type": "serialization_hooks_test:id_prefix",
+      "match": "c"
+    }
+  },
+  "result": {
+    "item": "minecraft:acacia_fence_gate"
+  }
+}

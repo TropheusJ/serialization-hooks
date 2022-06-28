@@ -5,9 +5,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 /**
  * This interface should be implemented onto all custom Ingredients.
  * This is required for your ingredient to function correctly.
@@ -18,11 +15,6 @@ public interface CustomIngredient {
 	 * if vanilla deserialization should be used.
 	 */
 	IngredientDeserializer getDeserializer();
-
-	/**
-	 * @return an array of Ingredient.Values, created from this Ingredient.
-	 */
-	Ingredient.Value[] getValues();
 
 	/**
 	 * @return if this Ingredient should have custom logic for testing if an ItemStack matches it
@@ -47,13 +39,5 @@ public interface CustomIngredient {
 
 	static boolean customDeserializer(Ingredient ingredient) {
 		return ingredient instanceof CustomIngredient c && c.customDeserializer();
-	}
-
-	static Ingredient.Value[] getValues(Ingredient ingredient) {
-		return ingredient instanceof CustomIngredient c ? c.getValues() : ingredient.values;
-	}
-
-	static Stream<Ingredient.Value> streamValues(Ingredient ingredient) {
-		return Arrays.stream(getValues(ingredient));
 	}
 }
