@@ -37,6 +37,10 @@ public class CombinedIngredient extends BaseCustomIngredient {
 		this.empty = children.stream().allMatch(Ingredient::isEmpty);
 	}
 
+	public CombinedIngredient(Ingredient... children) {
+		this(List.of(children));
+	}
+
 	@Override
 	public IngredientDeserializer getDeserializer() {
 		return Deserializer.INSTANCE;
