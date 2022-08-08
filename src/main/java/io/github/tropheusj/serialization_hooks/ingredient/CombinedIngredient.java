@@ -82,14 +82,12 @@ public class CombinedIngredient extends BaseCustomIngredient {
 
 	@Override
 	public JsonElement toJson() {
-		JsonObject root = new JsonObject();
-		root.addProperty("type", Deserializer.ID.toString());
+		// CombinedIngredient is an outlier because deserialization of it is special cased
 		JsonArray children = new JsonArray();
 		for (Ingredient child : this.children) {
 			children.add(child.toJson());
 		}
-		root.add("children", children);
-		return root;
+		return children;
 	}
 
 	public static class Deserializer implements IngredientDeserializer {
