@@ -31,7 +31,14 @@ public class CombinedIngredient extends BaseCustomIngredient {
 	private final boolean empty;
 
 	public CombinedIngredient(List<Ingredient> children) {
-		this.children = children;
+		this.children = new ArrayList<>();
+		for (Ingredient ingredient : children) {
+			if (ingredient instanceof CombinedIngredient combined) {
+				this.children.addAll(combined.children);
+			} else {
+				this.children.add(ingredient);
+			}
+		}
 		this.items = children.stream().flatMap(c -> Arrays.stream(c.getItems())).toArray(ItemStack[]::new);
 		this.stackingIds = new IntArrayList(children.stream().flatMapToInt(c -> c.getStackingIds().intStream()).toArray());
 		this.empty = children.stream().allMatch(Ingredient::isEmpty);
