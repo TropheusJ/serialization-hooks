@@ -1,9 +1,8 @@
 //file:noinspection GroovyAssignabilityCheck
 //file:noinspection GroovyAccessibility
 plugins {
-	id "fabric-loom" version "0.12-SNAPSHOT"
+	id "fabric-loom" version "1.0.+"
 	id "io.github.juuxel.loom-quiltflower" version "1.+" // Quiltflower, a better decompiler
-//	id "org.quiltmc.quilt-mappings-on-loom" version "4.2.+" // Quilt Mappings, for parameters and javadoc. Also hashed mojmap.
 	id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
 	id "maven-publish"
 }
@@ -19,6 +18,7 @@ String patch = buildNumber != null ? buildNumber : "99999"
 version = project.mod_version.replace("<build>", patch)
 
 repositories {
+	maven { url = "https://maven.quiltmc.org/repository/release" }
 	maven { url = "https://api.modrinth.com/maven" }
 	maven { url = "https://maven.bai.lol" }
 	maven { url = "https://maven.terraformersmc.com/releases/" }
@@ -29,28 +29,24 @@ repositories {
 dependencies {
 	// dev environment
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")
-	mappings loom.layered {
-//		it.addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.qm_version}:v2"))
-//		it.parchment("org.parchmentmc.data:parchment-1.18.2:BLEEDING-20220423.075040-3@zip") // https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.18.2/BLEEDING-SNAPSHOT
-		it.officialMojangMappings {
-			setNameSyntheticMembers(false)
-		}
-	}
+	mappings(loom.layered {
+		it.mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.qm_version}:intermediary-v2")
+//			it.parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
+		it.officialMojangMappings { nameSyntheticMembers = false }
+	})
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-	modLocalRuntime("maven.modrinth:lazydfu:0.1.2")
-	modLocalRuntime("maven.modrinth:suggestionproviderfabric:1.0.1")
-	modLocalRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}")
-	modLocalRuntime("maven.modrinth:badpackets:${project.bad_packets_version}")
-	modLocalRuntime("maven.modrinth:sodium:${project.sodium_version}") // rendering beware
-    localRuntime("org.joml:joml:1.10.4")
-	modLocalRuntime("maven.modrinth:lithium:${project.lithium_version}")
-	modLocalRuntime("maven.modrinth:iris:${project.iris_version}")
+	modLocalRuntime("maven.modrinth:lazydfu:0.1.3")
+//	modLocalRuntime("mcp.mobius.waila:wthit:${project.wthit_version}")
+//	modLocalRuntime("maven.modrinth:badpackets:${project.bad_packets_version}")
+//	modLocalRuntime("maven.modrinth:sodium:${project.sodium_version}") // rendering beware
+//	modLocalRuntime("maven.modrinth:lithium:${project.lithium_version}")
+//	modLocalRuntime("maven.modrinth:iris:${project.iris_version}")
 	modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}") { exclude group: "net.fabricmc"; exclude group: "net.fabricmc.fabric-api" }
 
 	// dependencies
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
-	implementation(include("com.github.LlamaLad7:MixinExtras:0.0.10"))
-	annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.10")
+	implementation(include("com.github.LlamaLad7:MixinExtras:0.1.1"))
+	annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
 }
 
 sourceSets {

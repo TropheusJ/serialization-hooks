@@ -3,7 +3,7 @@ package io.github.tropheusj.serialization_hooks.ingredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This interface should be implemented onto all custom Ingredients.

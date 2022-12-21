@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import io.github.tropheusj.serialization_hooks.ingredient.BaseCustomIngredient;
 import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
 import io.github.tropheusj.serialization_hooks_test.SerializationHooksTest;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -29,7 +29,7 @@ public class IdPrefixMatchingIngredient extends BaseCustomIngredient {
 
 	public IdPrefixMatchingIngredient(String match) {
 		this.match = match;
-		matches = Registry.ITEM.entrySet().stream().filter(e -> e.getKey().location().getPath().startsWith(match)).map(Entry::getValue).toList();
+		matches = BuiltInRegistries.ITEM.entrySet().stream().filter(e -> e.getKey().location().getPath().startsWith(match)).map(Entry::getValue).toList();
 	}
 
 	@Override

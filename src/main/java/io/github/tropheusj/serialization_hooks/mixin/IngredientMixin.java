@@ -7,8 +7,6 @@ import com.google.gson.JsonObject;
 
 import com.google.gson.JsonSyntaxException;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 import io.github.tropheusj.serialization_hooks.ingredient.CombinedIngredient;
@@ -16,8 +14,6 @@ import io.github.tropheusj.serialization_hooks.ingredient.CustomIngredient;
 import io.github.tropheusj.serialization_hooks.ingredient.IngredientDeserializer;
 import io.github.tropheusj.serialization_hooks.value.ValueDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
