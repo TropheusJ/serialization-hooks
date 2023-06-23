@@ -64,7 +64,7 @@ public abstract class IngredientMixin {
 	 * @reason to make JsonArray handling recursive, add custom object deserialization, and fast-fail in conflicts
 	 */
 	@Overwrite
-	public static Ingredient fromJson(@Nullable JsonElement json) {
+	public static Ingredient fromJson(@Nullable JsonElement json, boolean allowAir) {
 		if (json == null || json.isJsonNull()) {
 			throw new JsonSyntaxException("Item cannot be null");
 		} else if (json.isJsonObject()) {
@@ -75,12 +75,12 @@ public abstract class IngredientMixin {
 			return fromValues(Stream.of(valueFromJson(obj)));
 		} else if (json.isJsonArray()) {
 			JsonArray jsonArray = json.getAsJsonArray();
-			if (jsonArray.size() == 0) {
+			if (jsonArray.size() == 0 && !allowAir) {
 				throw new JsonSyntaxException("Item array cannot be empty, at least one item must be defined");
 			} else {
 				List<Ingredient> nested = new ArrayList<>();
 				for (JsonElement element : jsonArray) {
-					nested.add(fromJson(element));
+					nested.add(fromJson(element, allowAir));
 				}
 				// use vanilla method for vanilla ingredients
 				if (nested.stream().allMatch(i -> i.getClass() == Ingredient.class)) {
